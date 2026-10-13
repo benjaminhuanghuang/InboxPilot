@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardAction, CardContent } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface Props {
   subject: string;
@@ -41,26 +44,30 @@ export default function SummaryBox({ subject, from, body }: Props) {
   }
 
   return (
-    <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-900">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold">AI Summary</h3>
-        <button
-          onClick={summarize}
-          disabled={loading}
-          className="rounded-full bg-blue-600 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
-        >
-          {loading ? "Summarizing…" : summary ? "Regenerate" : "Summarize"}
-        </button>
-      </div>
-      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
-      {summary && (
-        <p className="mt-2 whitespace-pre-line text-sm leading-6">{summary}</p>
-      )}
-      {!summary && !loading && !error && (
-        <p className="mt-2 text-sm text-zinc-500">
-          Click Summarize to get a 2–3 bullet AI summary of this email.
-        </p>
-      )}
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>AI Summary</CardTitle>
+        <CardAction>
+          <Button onClick={summarize} disabled={loading}>
+            {loading ? "Summarizing…" : summary ? "Regenerate" : "Summarize"}
+          </Button>
+        </CardAction>
+      </CardHeader>
+      <CardContent>
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        {summary && (
+          <p className="whitespace-pre-line text-sm leading-6">{summary}</p>
+        )}
+        {!summary && !loading && !error && (
+          <p className="text-sm text-muted-foreground">
+            Click Summarize to get a 2–3 bullet AI summary of this email.
+          </p>
+        )}
+      </CardContent>
+    </Card>
   );
 }

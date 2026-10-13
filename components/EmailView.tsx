@@ -1,6 +1,7 @@
 "use client";
 
 import type { Email } from "@/lib/emails";
+import { Badge } from "@/components/ui/badge";
 import SummaryBox from "./SummaryBox";
 
 function formatDateTime(iso: string): string {
@@ -23,12 +24,7 @@ export default function EmailView({ email }: { email: Email }) {
       </div>
       <div className="mt-2 flex gap-2">
         {email.labels.map((label) => (
-          <span
-            key={label}
-            className="rounded-full bg-zinc-200 px-2.5 py-0.5 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
-          >
-            {label}
-          </span>
+          <Badge key={label}>{label}</Badge>
         ))}
       </div>
 
