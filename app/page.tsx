@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { EMAILS } from "@/lib/emails";
-import EmailList from "@/components/EmailList";
-import EmailView from "@/components/EmailView";
+import EmailList from "@/components/email-list";
+import EmailView from "@/components/email-view";
 
 export default function Home() {
   const [selectedId, setSelectedId] = useState(EMAILS[0].id);

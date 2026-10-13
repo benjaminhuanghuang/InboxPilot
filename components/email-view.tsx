@@ -2,7 +2,7 @@
 
 import type { Email } from "@/lib/emails";
 import { Badge } from "@/components/ui/badge";
-import SummaryBox from "./SummaryBox";
+import SummaryBox from "./summary-box";
 
 function formatDateTime(iso: string): string {
   const d = new Date(iso);
