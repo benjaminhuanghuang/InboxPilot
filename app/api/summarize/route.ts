@@ -1,4 +1,4 @@
-import { streamText } from "ai";
+import { streamText, toTextStream, createTextStreamResponse } from "ai";
 import { google } from "@ai-sdk/google";
 
 interface SummarizeRequest {
@@ -61,5 +61,5 @@ export async function POST(req: Request): Promise<Response> {
       console.error("[summarize] model stream error:", error);
     },
   });
-  return result.toTextStreamResponse();
+  return createTextStreamResponse({ stream: toTextStream({ stream: result.stream }) });
 }
