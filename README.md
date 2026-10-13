@@ -12,3 +12,7 @@ agent-style function calling, all engineered to production standards
 - Next.js 16 + React 19 + Tailwind 4 + Shadcn
 - vercel AI SDK 7 + Gemini
 - Postgres(Neon) + Drizzle
+
+## Live
+
+<https://inbox-pilot-kohl.vercel.app/>

@@ -18,7 +18,7 @@ function mockSummaryStream(req: SummarizeRequest): Response {
   const text =
     `• ${req.subject ?? "(no subject)"}\n` +
     `• From ${req.from ?? "unknown"}: ${firstLines.slice(0, 220)}…\n\n` +
-    `[demo summary — set OPENAI_API_KEY for AI-generated summaries]`;
+    `[demo summary — set API_KEY for AI-generated summaries]`;
 
   const encoder = new TextEncoder();
   const stream = new ReadableStream<Uint8Array>({
@@ -51,7 +51,7 @@ export async function POST(req: Request): Promise<Response> {
   }
 
   const result = streamText({
-    model: google(process.env.GEMINI_MODEL ?? "gemini-2.0-flash"),
+    model: google(process.env.GEMINI_MODEL ?? "gemini-2.5-flash"),
     system:
       "You are an email assistant. Summarize the email in 2-3 short " +
       "bullet points: what it's about, and any action needed with " +
