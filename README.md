@@ -11,4 +11,4 @@ agent-style function calling, all engineered to production standards
 - TypeScript
 - Next.js 16 + React 19 + Tailwind 4 + Shadcn
 - vercel AI SDK 7
-- Mock data
+- Postgres(Neon) + Drizzle
