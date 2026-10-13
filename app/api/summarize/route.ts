@@ -1,5 +1,5 @@
 import { streamText } from "ai";
-import { openai } from "@ai-sdk/openai";
+import { google } from "@ai-sdk/google";
 
 interface SummarizeRequest {
   subject?: string;
@@ -46,12 +46,12 @@ export async function POST(req: Request): Promise<Response> {
     return new Response("Missing email body", { status: 400 });
   }
 
-  if (!process.env.OPENAI_API_KEY) {
+  if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
     return mockSummaryStream(payload);
   }
 
   const result = streamText({
-    model: openai("gpt-4o-mini"),
+    model: google(process.env.GEMINI_MODEL ?? "gemini-2.0-flash"),
     system:
       "You are an email assistant. Summarize the email in 2-3 short " +
       "bullet points: what it's about, and any action needed with " +
