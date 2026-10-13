@@ -1,14 +1,21 @@
-"use client";
-
-import { useState } from "react";
-import { EMAILS } from "@/lib/emails";
-import EmailList from "@/components/email-list";
-import EmailView from "@/components/email-view";
+import { Suspense } from "react";
+import { getEmails } from "@/lib/db/queries";
+import Inbox from "@/components/inbox";
 
 export default function Home() {
-  const [selectedId, setSelectedId] = useState(EMAILS[0].id);
-  const email = EMAILS.find((e) => e.id === selectedId) ?? EMAILS[0];
+  return (
+    <Suspense fallback={<InboxSkeleton />}>
+      <InboxData />
+    </Suspense>
+  );
+}
 
+async function InboxData() {
+  const emails = await getEmails();
+  return <Inbox emails={emails} />;
+}
+
+function InboxSkeleton() {
   return (
     <div className="flex h-screen">
       <aside className="flex w-96 shrink-0 flex-col border-r border-zinc-200 dark:border-zinc-800">
@@ -16,17 +23,9 @@ export default function Home() {
           <h1 className="text-lg font-bold">InboxPilot</h1>
           <p className="text-xs text-zinc-500">AI mail assistant · demo</p>
         </header>
-        <div className="flex-1 overflow-y-auto">
-          <EmailList
-            emails={EMAILS}
-            selectedId={selectedId}
-            onSelect={setSelectedId}
-          />
-        </div>
+        <div className="flex-1 p-4 text-sm text-zinc-500">Loading…</div>
       </aside>
-      <main className="flex-1 overflow-y-auto">
-        <EmailView key={email.id} email={email} />
-      </main>
+      <main className="flex-1" />
     </div>
   );
 }
