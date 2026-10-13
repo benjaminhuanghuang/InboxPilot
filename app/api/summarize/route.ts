@@ -57,6 +57,9 @@ export async function POST(req: Request): Promise<Response> {
       "bullet points: what it's about, and any action needed with " +
       "dates or numbers. Be terse.",
     prompt: `Subject: ${payload.subject ?? ""}\nFrom: ${payload.from ?? ""}\n\n${payload.body}`,
+    onError: ({ error }) => {
+      console.error("[summarize] model stream error:", error);
+    },
   });
   return result.toTextStreamResponse();
 }

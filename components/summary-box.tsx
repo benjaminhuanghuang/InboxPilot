@@ -37,10 +37,18 @@ export default function SummaryBox({ subject, from, body }: Props) {
       }
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
+      let received = "";
       for (;;) {
         const { value, done } = await reader.read();
         if (done) break;
-        setSummary((s) => s + decoder.decode(value, { stream: true }));
+        received += decoder.decode(value, { stream: true });
+        setSummary(received);
+      }
+      // Server failed and returned 200 but content is empty:
+      if (!received.trim()) {
+        throw new Error(
+          "No summary returned — the AI provider likely failed mid-stream. Check server logs."
+        );
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Summarization failed");
