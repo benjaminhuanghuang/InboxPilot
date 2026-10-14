@@ -2,6 +2,8 @@
 
 ## Features
 
+- AI summary, draft reply
+
 LLM integration, streaming UX, retrieval-augmented generation, and
 agent-style function calling, all engineered to production standards
 (evals, observability, graceful degradation).
