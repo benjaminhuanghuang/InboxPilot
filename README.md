@@ -3,6 +3,7 @@
 ## Features
 
 - AI summary, draft reply
+- RAG search
 
 LLM integration, streaming UX, retrieval-augmented generation, and
 agent-style function calling, all engineered to production standards
