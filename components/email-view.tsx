@@ -3,6 +3,7 @@
 import type { Email } from "@/lib/emails";
 import { Badge } from "@/components/ui/badge";
 import SummaryBox from "./summary-box";
+import DraftBox from "./draft-box";
 
 function formatDateTime(iso: string): string {
   const d = new Date(iso);
@@ -34,6 +35,10 @@ export default function EmailView({ email }: { email: Email }) {
           from={email.from}
           body={email.body}
         />
+      </div>
+
+      <div className="mt-6">
+        <DraftBox subject={email.subject} from={email.from} body={email.body} />
       </div>
 
       <div className="mt-6 whitespace-pre-line text-sm leading-7">
