@@ -38,7 +38,12 @@ export default function EmailView({ email }: { email: Email }) {
       </div>
 
       <div className="mt-6">
-        <DraftBox subject={email.subject} from={email.from} body={email.body} />
+        <DraftBox
+          id={email.id}
+          subject={email.subject}
+          from={email.from}
+          body={email.body}
+        />
       </div>
 
       <div className="mt-6 whitespace-pre-line text-sm leading-7">

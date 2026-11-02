@@ -15,12 +15,13 @@ const TONES = ["formal", "friendly", "concise"] as const;
 type Tone = (typeof TONES)[number];
 
 interface Props {
+  id: string;
   subject: string;
   from: string;
   body: string;
 }
 
-export default function DraftBox({ subject, from, body }: Props) {
+export default function DraftBox({ id, subject, from, body }: Props) {
   const [tone, setTone] = useState<Tone>("friendly");
   const [draft, setDraft] = useState("");
   const [loading, setLoading] = useState(false);
@@ -36,7 +37,7 @@ export default function DraftBox({ subject, from, body }: Props) {
       const res = await fetch("/api/draft", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ subject, from, body, tone: nextTone }),
+        body: JSON.stringify({ id, subject, from, body, tone: nextTone }),
       });
       if (!res.ok || !res.body) {
         throw new Error(`Request failed (${res.status})`);

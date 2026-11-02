@@ -31,4 +31,5 @@ prompt: `Subject: ${payload.subject ?? ""}\nFrom: ${payload.from ?? ""}\n\n${pay
 
 app/api/draft/route.ts
 
-让模型在写回复前先看同一发件人过去的邮件，给草稿加上历史上下文，而不是只看这一封邮件的 subject/from/body 当上下文。
+- createSearchEmailHistoryTool: 让模型在写回复前先看同一发件人过去的邮件，给草稿加上历史上下文，而不是只看这一封邮件的 subject/from/body 当上下文。
+- createGetAttachmentsTool: 给模型一个"按需查附件元数据"的能力，而不是把所有附件信息都硬塞进 prompt

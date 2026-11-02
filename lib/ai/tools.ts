@@ -1,6 +1,6 @@
 import { tool } from "ai";
 import { z } from "zod";
-import { searchEmailHistory } from "@/lib/db/queries";
+import { getAttachments, searchEmailHistory } from "@/lib/db/queries";
 
 /** Lets the model look up prior emails from the same sender for context. */
 export function createSearchEmailHistoryTool(excludeId?: string) {
@@ -31,6 +31,22 @@ export function createSearchEmailHistoryTool(excludeId?: string) {
         date: e.date,
         snippet: e.body.slice(0, 300),
       }));
+    },
+  });
+}
+
+/** Lets the model check what attachments (if any) are on the current email. */
+export function createGetAttachmentsTool(emailId?: string) {
+  return tool({
+    description:
+      "List the attachments on the email being drafted a reply to " +
+      "(filename, content type, size, upload status). Use this when the " +
+      "email references an attachment (e.g. \"see attached\") and you need " +
+      "to know what it is before replying. Does not return file contents.",
+    inputSchema: z.object({}),
+    execute: async () => {
+      if (!emailId) return [];
+      return getAttachments(emailId);
     },
   });
 }

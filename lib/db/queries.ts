@@ -1,6 +1,6 @@
-import { and, desc, ilike, ne, or } from "drizzle-orm";
+import { and, desc, eq, ilike, ne, or } from "drizzle-orm";
 import { db } from "./index";
-import { emails } from "./schema";
+import { attachments, emails } from "./schema";
 import type { Email } from "../emails";
 
 function toEmail(row: typeof emails.$inferSelect): Email {
@@ -56,4 +56,25 @@ export async function searchEmailHistory({
     .orderBy(desc(emails.date))
     .limit(limit);
   return rows.map(toEmail);
+}
+
+export interface AttachmentInfo {
+  filename: string;
+  contentType: string;
+  size: number;
+  status: (typeof attachments.$inferSelect)["status"];
+}
+
+/** Lists the attachments on a given email (metadata only, no file content). */
+export async function getAttachments(emailId: string): Promise<AttachmentInfo[]> {
+  const rows = await db
+    .select({
+      filename: attachments.filename,
+      contentType: attachments.contentType,
+      size: attachments.size,
+      status: attachments.status,
+    })
+    .from(attachments)
+    .where(eq(attachments.emailId, emailId));
+  return rows;
 }

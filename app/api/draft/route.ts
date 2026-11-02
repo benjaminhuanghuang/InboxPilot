@@ -1,6 +1,6 @@
 import { streamText, toTextStream, createTextStreamResponse, stepCountIs } from "ai";
 import { google } from "@ai-sdk/google";
-import { createSearchEmailHistoryTool } from "@/lib/ai/tools";
+import { createGetAttachmentsTool, createSearchEmailHistoryTool } from "@/lib/ai/tools";
 
 const TONES = ["formal", "friendly", "concise"] as const;
 type Tone = (typeof TONES)[number];
@@ -84,10 +84,11 @@ export async function POST(req: Request): Promise<Response> {
 
   const result = streamText({
     model: google(process.env.GEMINI_MODEL ?? "gemini-2.5-flash"),
-    system: `You are an email assistant. Draft a short reply to the email below in a ${payload.tone} tone. Reply in the same language as the email. Do not invent facts not present in the email, but you may use details found via the searchEmailHistory tool. If the thread looks like it continues a prior conversation, use searchEmailHistory to check for earlier emails from this sender before drafting. Output only the reply body, no subject line.`,
+    system: `You are an email assistant. Draft a short reply to the email below in a ${payload.tone} tone. Reply in the same language as the email. Do not invent facts not present in the email, but you may use details found via tools. If the thread looks like it continues a prior conversation, use searchEmailHistory to check for earlier emails from this sender before drafting. If the email references an attachment (e.g. "see attached"), use getAttachments to check what it is before drafting. Output only the reply body, no subject line.`,
     prompt: `Subject: ${payload.subject ?? ""}\nFrom: ${payload.from ?? ""}\n\n${payload.body}`,
     tools: {
       searchEmailHistory: createSearchEmailHistoryTool(payload.id),
+      getAttachments: createGetAttachmentsTool(payload.id),
     },
     stopWhen: stepCountIs(5),
   });
