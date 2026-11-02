@@ -1,9 +1,20 @@
-import { and, desc, eq, ilike, ne, or } from "drizzle-orm";
+import { and, cosineDistance, desc, eq, ilike, isNotNull, isNull, ne, or, sql } from "drizzle-orm";
 import { db } from "./index";
 import { attachments, emails } from "./schema";
 import type { Email } from "../emails";
 
-function toEmail(row: typeof emails.$inferSelect): Email {
+interface EmailRow {
+  id: string;
+  from: string;
+  to: string;
+  subject: string;
+  date: Date;
+  body: string;
+  labels: string[];
+  read: boolean;
+}
+
+function toEmail(row: EmailRow): Email {
   return {
     id: row.id,
     from: row.from,
@@ -19,6 +30,19 @@ function toEmail(row: typeof emails.$inferSelect): Email {
 export async function getEmails(): Promise<Email[]> {
   const rows = await db.select().from(emails).orderBy(desc(emails.date));
   return rows.map(toEmail);
+}
+
+/** Emails that have no embedding yet, for backfilling. */
+export async function getEmailsWithoutEmbedding(): Promise<Email[]> {
+  const rows = await db.select().from(emails).where(isNull(emails.embedding));
+  return rows.map(toEmail);
+}
+
+export async function setEmailEmbedding(
+  id: string,
+  embedding: number[],
+): Promise<void> {
+  await db.update(emails).set({ embedding }).where(eq(emails.id, id));
 }
 
 /** Extracts the bare address from a "Name <addr@host>" header, or returns it as-is. */
@@ -56,6 +80,39 @@ export async function searchEmailHistory({
     .orderBy(desc(emails.date))
     .limit(limit);
   return rows.map(toEmail);
+}
+
+export interface EmailSearchResult extends Email {
+  similarity: number;
+}
+
+/** Semantic search: finds emails whose embedding is closest to the query embedding. */
+export async function searchEmailsBySimilarity(
+  queryEmbedding: number[],
+  limit = 10,
+): Promise<EmailSearchResult[]> {
+  const distance = sql<number>`${cosineDistance(emails.embedding, queryEmbedding)}`;
+  const rows = await db
+    .select({
+      id: emails.id,
+      from: emails.from,
+      to: emails.to,
+      subject: emails.subject,
+      date: emails.date,
+      body: emails.body,
+      labels: emails.labels,
+      read: emails.read,
+      distance,
+    })
+    .from(emails)
+    .where(isNotNull(emails.embedding))
+    .orderBy(distance)
+    .limit(limit);
+
+  return rows.map(({ distance, ...row }) => ({
+    ...toEmail(row),
+    similarity: 1 - distance,
+  }));
 }
 
 export interface AttachmentInfo {

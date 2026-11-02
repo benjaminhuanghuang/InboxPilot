@@ -15,6 +15,13 @@
       "when": 1791930305003,
       "tag": "0001_stale_songbird",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793660324770,
+      "tag": "0002_add_email_embedding",
+      "breakpoints": true
     }
   ]
 }

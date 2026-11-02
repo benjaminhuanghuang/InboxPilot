@@ -2,7 +2,7 @@
 
 ## Features
 
-- AI summary, draft reply
+- AI summary, draft reply based on history
 - RAG search
 
 LLM integration, streaming UX, retrieval-augmented generation, and
@@ -13,7 +13,7 @@ agent-style function calling, all engineered to production standards
 
 - TypeScript
 - Next.js 16 + React 19 + Tailwind 4 + Shadcn
-- vercel AI SDK 7 + Gemini
+- vercel AI SDK 7 + Gemini 3.5 flash lite
 - Postgres(Neon) + Drizzle
 
 ## Live

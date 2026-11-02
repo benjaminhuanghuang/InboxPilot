@@ -5,7 +5,10 @@ import {
   boolean,
   integer,
   index,
+  vector,
 } from "drizzle-orm/pg-core";
+
+export const EMBEDDING_DIMENSIONS = 3072;
 
 export const emails = pgTable("emails", {
   id: text("id").primaryKey(),
@@ -16,6 +19,9 @@ export const emails = pgTable("emails", {
   body: text("body").notNull(),
   labels: text("labels").array().notNull().default([]),
   read: boolean("read").notNull().default(false),
+  // Embedding of "subject + body", used for semantic (RAG) search. Nullable
+  // because it is backfilled asynchronously after a row is inserted.
+  embedding: vector("embedding", { dimensions: EMBEDDING_DIMENSIONS }),
 });
 
 export const attachmentStatus = ["pending", "uploaded", "failed"] as const;
