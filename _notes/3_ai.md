@@ -27,8 +27,8 @@ subject + body -> prompt -> LLM
 prompt: `Subject: ${payload.subject ?? ""}\nFrom: ${payload.from ?? ""}\n\n${payload.body}`,
 ```
 
-## Draft
+## Draft: prompt + tool calling
 
 app/api/draft/route.ts
 
-subject + body -> prompt -> LLM
+让模型在写回复前先看同一发件人过去的邮件，给草稿加上历史上下文，而不是只看这一封邮件的 subject/from/body 当上下文。
