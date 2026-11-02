@@ -6,3 +6,8 @@
 
 "drizzle-kit": "^0.31.11",  
 ```
+
+## Schema
+
+- emails
+- attachments

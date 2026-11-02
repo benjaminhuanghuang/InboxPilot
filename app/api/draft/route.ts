@@ -1,4 +1,4 @@
-import { streamText } from "ai";
+import { streamText, toTextStream, createTextStreamResponse } from "ai";
 import { google } from "@ai-sdk/google";
 
 const TONES = ["formal", "friendly", "concise"] as const;
@@ -82,12 +82,13 @@ export async function POST(req: Request): Promise<Response> {
 
   const result = streamText({
     model: google(process.env.GEMINI_MODEL ?? "gemini-2.5-flash"),
-    system:
-      `You are an email assistant. Draft a short reply to the email below ` +
-      `in a ${payload.tone} tone. Reply in the same language as the email. ` +
-      `Do not invent facts not present in the email. Output only the reply ` +
-      `body, no subject line.`,
+    system: `You are an email assistant. Draft a short reply to the email below 
+    in a ${payload.tone} tone. Reply in the same language as the email. 
+    Do not invent facts not present in the email. Output only the reply body, 
+    no subject line.`,
     prompt: `Subject: ${payload.subject ?? ""}\nFrom: ${payload.from ?? ""}\n\n${payload.body}`,
   });
-  return result.toTextStreamResponse();
+  return createTextStreamResponse({
+    stream: toTextStream({ stream: result.stream }),
+  });
 }
