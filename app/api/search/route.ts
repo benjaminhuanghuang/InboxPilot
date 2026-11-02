@@ -56,7 +56,7 @@ export async function POST(req: Request): Promise<Response> {
   }
 
   const queryEmbedding = await embedOne(query, "RETRIEVAL_QUERY");
-  const matches = await searchEmailsBySimilarity(queryEmbedding, 10);
+  const matches = await searchEmailsBySimilarity(queryEmbedding, 3);
   return Response.json({
     results: matches.map((e) => toResult(e, e.similarity)),
   });
